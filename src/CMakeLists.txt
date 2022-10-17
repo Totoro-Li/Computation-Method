@@ -3,6 +3,7 @@ project(ComputationMethod C)
 
 set(CMAKE_C_STANDARD 99)
 
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 set(sdk_name ComputationMethod)
 set(sdk_sources
         NonlinearEquationsIterative/main.c
@@ -30,8 +31,13 @@ target_include_directories(${sdk_name} PUBLIC
 
 add_custom_command(TARGET ${sdk_name} POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy
-        $<TARGET_FILE:${sdk_name}>
-        ${CMAKE_CURRENT_SOURCE_DIR}/../shared_test/sdk/$<TARGET_FILE_NAME:${sdk_name}>
+        ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${CMAKE_SHARED_LIBRARY_PREFIX}${sdk_name}.dll
+        ${CMAKE_CURRENT_SOURCE_DIR}/../shared_test/sdk/${CMAKE_SHARED_LIBRARY_PREFIX}${sdk_name}.dll
+
+        COMMAND ${CMAKE_COMMAND} -E copy
+        ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${CMAKE_SHARED_LIBRARY_PREFIX}${sdk_name}.lib
+        ${CMAKE_CURRENT_SOURCE_DIR}/../shared_test/sdk/${CMAKE_SHARED_LIBRARY_PREFIX}${sdk_name}.lib
+
         )
 add_custom_command(TARGET ${sdk_name} POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy
