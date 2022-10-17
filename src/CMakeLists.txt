@@ -7,7 +7,8 @@ set(sdk_name ComputationMethod)
 set(sdk_sources
         NonlinearEquationsIterative/main.c
         IntegralTransform/fft.c
-        ODE/main.c)
+        ODE/main.c
+        Interpolation/LagrangeInterpolation.c)
 
 option(BUILD_SHARED_LIBS "Build shared libraries" ON)
 option(BUILD_TESTS "Build tests" ON)
@@ -20,12 +21,22 @@ project(
 
 add_library(
         ${sdk_name} # create a target as a library
-
-        # SHARED/STATIC         # ignore library type because it will be decided by 'BUILD_SHARED_LIBS'
+        SHARED
         ${sdk_sources} # c sources (variable 'sdk_sources')
 )
 target_include_directories(${sdk_name} PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/include
+        )
+
+add_custom_command(TARGET ${sdk_name} POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy
+        $<TARGET_FILE:${sdk_name}>
+        ${CMAKE_CURRENT_SOURCE_DIR}/../shared_test/sdk/$<TARGET_FILE_NAME:${sdk_name}>
+        )
+add_custom_command(TARGET ${sdk_name} POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy
+        ${PROJECT_SOURCE_DIR}/include/common.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/../shared_test/include/common.h
         )
 # destination
 # e.g. cmake --build . --target install

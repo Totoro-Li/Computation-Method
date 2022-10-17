@@ -18,3 +18,4 @@ double runge_kutta(double x0, double y0, double h, double x, func_dd f) {
     return y;
 }
 
+
